@@ -1,0 +1,3 @@
+[submodule "dependencies/Floe"]
+	path = dependencies/Floe
+	url = https://github.com/bretternst/Floe.git

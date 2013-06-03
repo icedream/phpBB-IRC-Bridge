@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <interface>
+    <language>en-US</language>
+  </interface>
+  <server>
+    <host>irc.rizon.net</host>
+    <port>6667</port>
+    <secure>false</secure>
+    <autoreconnect>true</autoreconnect>
+    <password></password>
+  </server>
+  <bot>
+    <nickname>FourDeltaOne-Forum</nickname>
+    <username>4d1-forum</username>
+    <realname>#alteriwnet-german Forum Bot</realname>
+    <invisible>false</invisible>
+  </bot>
+  <nickserv>
+    <authentication><!-- NickServ identify string here if needed --></authentication>
+  </nickserv>
+  <forum>
+    <baseurl>http://fourdeltaone.net/forum/</baseurl>
+    <subforum-id>20</subforum-id>
+    <checkinterval>00:00:30</checkinterval><!-- HH:MM:SS -->
+  </forum>
+  <channels>
+    <channel>#alterIWnet-German</channel>
+    <channel>#fourdeltaone-german</channel>
+  </channels>
+</configuration>
