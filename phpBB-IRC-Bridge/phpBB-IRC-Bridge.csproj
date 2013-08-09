@@ -71,7 +71,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Floe\Floe.Net\Floe.Net.csproj">
+    <ProjectReference Include="..\dependencies\Floe\Floe.Net\Floe.Net.csproj">
       <Project>{1d4ad463-4355-4da6-b8e6-0e8bb75b50d9}</Project>
       <Name>Floe.Net</Name>
     </ProjectReference>
