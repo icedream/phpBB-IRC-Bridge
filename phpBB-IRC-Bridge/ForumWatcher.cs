@@ -103,13 +103,17 @@ namespace ForumBot_German4D1
             Stopwatch sw = new Stopwatch();
             while (true)
             {
-                if (CancellationTokenSource.Token.IsCancellationRequested)
-                    break;
+                CancellationTokenSource.Token.ThrowIfCancellationRequested();
 
-                sw.Restart();
+                sw.Reset();
+                sw.Start();
                 await Task.Run(new Action(this.RunSingle));
-                while (!CancellationTokenSource.Token.IsCancellationRequested && sw.Elapsed < CheckInterval)
-                    Thread.Sleep(TimeSpan.FromMilliseconds(Math.Max(0, (double)(CheckInterval.TotalMilliseconds - sw.ElapsedMilliseconds))));
+                while (sw.Elapsed < CheckInterval)
+                {
+                    CancellationTokenSource.Token.ThrowIfCancellationRequested();
+                    Thread.Sleep(TimeSpan.FromMilliseconds(Math.Max(100, (double)(CheckInterval.TotalMilliseconds - sw.ElapsedMilliseconds))));
+                }
+                sw.Stop();
             }
         }
     }
