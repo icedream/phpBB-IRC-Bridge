@@ -75,26 +75,33 @@ namespace ForumBot_German4D1
 
         private void RunSingle()
         {
-            // Generate feed url
-            UriBuilder b = new UriBuilder(new Uri(ForumBaseUrl, "feed.php"));
-            b.Query = string.Format("f={0}", ForumID);
-
-            // Get the feed
-            _currentAtomFeed = XDocument.Load(b.Uri.ToString());
-
-            // Get posts since last update
-            var posts = _currentAtomFeed.Root.Elements("{http://www.w3.org/2005/Atom}entry")
-                    .Where(pnode => DateTime.Parse(pnode.Element("{http://www.w3.org/2005/Atom}updated").Value, null, DateTimeStyles.RoundtripKind) > LastUpdate)
-                    .ToArray();
-
-            // Check if any updated posts exist
-            if (posts.Any())
+            try
             {
-                // Update last update timestamp
-                LastUpdate = DateTime.Parse(_currentAtomFeed.Root.Element("{http://www.w3.org/2005/Atom}updated").Value, null, DateTimeStyles.RoundtripKind);
+                // Generate feed url
+                UriBuilder b = new UriBuilder(new Uri(ForumBaseUrl, "feed.php"));
+                b.Query = string.Format("f={0}", ForumID);
 
-                // Trigger event
-                OnPostsIncoming(new IncomingPostsEventArgs(posts));
+                // Get the feed
+                _currentAtomFeed = XDocument.Load(b.Uri.ToString());
+
+                // Get posts since last update
+                var posts = _currentAtomFeed.Root.Elements("{http://www.w3.org/2005/Atom}entry")
+                        .Where(pnode => DateTime.Parse(pnode.Element("{http://www.w3.org/2005/Atom}updated").Value, null, DateTimeStyles.RoundtripKind) > LastUpdate)
+                        .ToArray();
+
+                // Check if any updated posts exist
+                if (posts.Any())
+                {
+                    // Update last update timestamp
+                    LastUpdate = DateTime.Parse(_currentAtomFeed.Root.Element("{http://www.w3.org/2005/Atom}updated").Value, null, DateTimeStyles.RoundtripKind);
+
+                    // Trigger event
+                    OnPostsIncoming(new IncomingPostsEventArgs(posts));
+                }
+            }
+            catch
+            {
+                return;
             }
         }
 
