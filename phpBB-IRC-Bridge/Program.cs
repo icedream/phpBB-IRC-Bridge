@@ -147,7 +147,7 @@ namespace ForumBot_German4D1
             // Identify when NickServ requests it
             _irc.PrivateMessaged += (s, e) =>
             {
-                if (e.From.Nickname == "ChanServ" && e.Text.Contains("This nickname is registered"))
+                if (e.From.Nickname == "NickServ" && e.Text.Contains("This nickname is registered"))
                     _irc.PrivateMessage(new IrcTarget(e.From), string.Format("IDENTIFY {0}", _config.SelectSingleNode("//configuration/nickserv/authentication").InnerText));
                     _irc.PrivateMessage(new IrcTarget("HostServ"), "ON");
             };
