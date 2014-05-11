@@ -24,9 +24,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.Linq;
-using ForumBot_German4D1.Properties;
+using IRCBoard.Properties;
 
-namespace ForumBot_German4D1
+namespace IRCBoard
 {
     public class ForumWatcher
     {

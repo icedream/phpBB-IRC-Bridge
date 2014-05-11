@@ -23,9 +23,9 @@ using System.Threading;
 using System.Xml;
 using System.Xml.Linq;
 using Floe.Net;
-using ForumBot_German4D1.Properties;
+using IRCBoard.Properties;
 
-namespace ForumBot_German4D1
+namespace IRCBoard
 {
     internal class Program
     {
