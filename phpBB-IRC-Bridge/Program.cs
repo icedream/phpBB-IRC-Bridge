@@ -17,31 +17,27 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Linq;
-using System.Xml.XPath;
 using Floe.Net;
-using System.Diagnostics;
+using ForumBot_German4D1.Properties;
 
 namespace ForumBot_German4D1
 {
-    class Program
+    internal class Program
     {
-        IrcSession _irc;
-        XmlDocument _config;
-        ForumWatcher _watcher;
+        private XmlDocument _config;
+        private IrcSession _irc;
+        private ForumWatcher _watcher;
 
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
             var doc = new XmlDocument();
             if (!args.Any())
-                args = new[] { "Configuration.xml" };
+                args = new[] {"Configuration.xml"};
             doc.Load(args.First());
             var p = new Program();
             p.Run(doc);
@@ -54,17 +50,19 @@ namespace ForumBot_German4D1
             _config = configuration;
 
             // Set localization
-            if(!configuration.SelectSingleNode("//configuration/interface/language").InnerText.Equals("auto", StringComparison.OrdinalIgnoreCase))
-                Thread.CurrentThread.CurrentUICulture = CultureInfo.GetCultureInfo(configuration.SelectSingleNode("//configuration/interface/language").InnerText);
+            if (
+                !configuration.SelectSingleNode("//configuration/interface/language")
+                    .InnerText.Equals("auto", StringComparison.OrdinalIgnoreCase))
+                Thread.CurrentThread.CurrentUICulture =
+                    CultureInfo.GetCultureInfo(
+                        configuration.SelectSingleNode("//configuration/interface/language").InnerText);
 
             // Create IRC session (uninitialized)
             _irc = new IrcSession();
 
             // On connection errors
-            _irc.ConnectionError += (s, e) =>
-            {
-                Console.WriteLine("Error: {0}", e.Exception.ToString());
-            };
+            _irc.ConnectionError +=
+                (s, e) => { Console.WriteLine(Resources.MessageErrorOccurred, e.Exception.ToString()); };
 
             // Fix for kicks
             _irc.SelfKicked += (s, e) =>
@@ -74,40 +72,25 @@ namespace ForumBot_German4D1
             };
 
             // Triggered when someone joins a channel
-            _irc.Joined += (s, e) =>
-            {
-                Console.WriteLine("{1} joined channel {0}", e.Channel.Name, e.Who.Nickname);
-            };
+            _irc.Joined +=
+                (s, e) => { Console.WriteLine(Resources.MessageIRCUserJoinedChannel, e.Channel.Name, e.Who.Nickname); };
 
             // Triggered when someone leaves a channel
-            _irc.Parted += (s, e) =>
-            {
-                Console.WriteLine("{1} left channel {0}", e.Channel.Name, e.Who.Nickname);
-            };
+            _irc.Parted +=
+                (s, e) => { Console.WriteLine(Resources.MessageIRCUserLeftChanne, e.Channel.Name, e.Who.Nickname); };
 
             // Triggered when someone changes his nickname
-            _irc.NickChanged += (s, e) =>
-            {
-                Console.WriteLine("{1} changed nickname to {0}", e.NewNickname, e.OldNickname);
-            };
+            _irc.NickChanged +=
+                (s, e) => { Console.WriteLine(Resources.MessageIRCUserChangedNickname, e.NewNickname, e.OldNickname); };
 
             // Triggered when we join a channel
-            _irc.SelfJoined += (s, e) =>
-            {
-                Console.WriteLine("<Bot> joined channel {0}", e.Channel.Name);
-            };
+            _irc.SelfJoined += (s, e) => { Console.WriteLine(Resources.MessageBotJoinedChannel, e.Channel.Name); };
 
             // Triggered when we leave a channel
-            _irc.SelfParted += (s, e) =>
-            {
-                Console.WriteLine("<Bot> left channel {0}", e.Channel.Name);
-            };
+            _irc.SelfParted += (s, e) => { Console.WriteLine(Resources.MessageBotLeftChannel, e.Channel.Name); };
 
             // Triggered when we change our nickname
-            _irc.SelfNickChanged += (s, e) =>
-            {
-                Console.WriteLine("<Bot> changed nickname to {0}", e.NewNickname);
-            };
+            _irc.SelfNickChanged += (s, e) => { Console.WriteLine(Resources.MessageBotChangedNickname, e.NewNickname); };
 
             // Triggered on connection state change
             _irc.StateChanged += (s, e) =>
@@ -115,18 +98,18 @@ namespace ForumBot_German4D1
                 switch (_irc.State)
                 {
                     case IrcSessionState.Connected:
-                        Console.WriteLine("IRC connection succeeded.");
-                        if(!_watcher.Alive)
+                        Console.WriteLine(Resources.MessageIRCConnectionSuccess);
+                        if (!_watcher.Alive)
                             _watcher.Start();
                         break;
                     case IrcSessionState.Disconnected:
-                        Console.WriteLine("IRC disconnected.");
+                        Console.WriteLine(Resources.MessageIRCDisconnected);
                         break;
                     case IrcSessionState.Connecting:
-                        Console.WriteLine("Connecting to IRC network...");
+                        Console.WriteLine(Resources.MessageIRCConnecting);
                         break;
                     default:
-                        Console.WriteLine("IRC session state changed to {0}", _irc.State.ToString());
+                        Console.WriteLine(Resources.MessageIRCSessionStateChanged, _irc.State.ToString());
                         break;
                 }
             };
@@ -136,8 +119,7 @@ namespace ForumBot_German4D1
             {
                 // Check if channel is in autojoin list
                 if (_config.SelectNodes("//configuration/channels/channel")
-                    .Cast<XmlNode>().Where(node => node.InnerText.Equals(e.Channel, StringComparison.OrdinalIgnoreCase))
-                    .Any())
+                    .Cast<XmlNode>().Any(node => node.InnerText.Equals(e.Channel, StringComparison.OrdinalIgnoreCase)))
                 {
                     // Join the channel
                     _irc.Join(e.Channel);
@@ -148,8 +130,10 @@ namespace ForumBot_German4D1
             _irc.PrivateMessaged += (s, e) =>
             {
                 if (e.From.Nickname == "NickServ" && e.Text.Contains("This nickname is registered"))
-                    _irc.PrivateMessage(new IrcTarget(e.From), string.Format("IDENTIFY {0}", _config.SelectSingleNode("//configuration/nickserv/authentication").InnerText));
-                    _irc.PrivateMessage(new IrcTarget("HostServ"), "ON");
+                    _irc.PrivateMessage(new IrcTarget(e.From),
+                        string.Format("IDENTIFY {0}",
+                            _config.SelectSingleNode("//configuration/nickserv/authentication").InnerText));
+                _irc.PrivateMessage(new IrcTarget("HostServ"), "ON");
             };
 
             // Reply to CTCP Version
@@ -159,7 +143,7 @@ namespace ForumBot_German4D1
                 switch (e.Command.Command.ToUpper())
                 {
                     case "VERSION":
-                        _irc.SendCtcp(new IrcTarget(e.From), new CtcpCommand("VERSION", "4D1 forum bot maintained by Icedream"), true);
+                        _irc.SendCtcp(new IrcTarget(e.From), new CtcpCommand("VERSION", "phpBB IRC bot"), true);
                         break;
                 }
             };
@@ -181,9 +165,12 @@ namespace ForumBot_German4D1
              */
 
             // Initialize and connect IRC session
-            Console.WriteLine("Host: {0}", configuration.SelectSingleNode("//configuration/server/host").InnerText);
-            Console.WriteLine("Port: {0}", configuration.SelectSingleNode("//configuration/server/port").InnerText);
-            Console.WriteLine("SSL: {0}", Convert.ToBoolean(configuration.SelectSingleNode("//configuration/server/secure").InnerText));
+            Console.WriteLine(Resources.MessageDebugPrintHost,
+                configuration.SelectSingleNode("//configuration/server/host").InnerText);
+            Console.WriteLine(Resources.MessageDebugPrintPort,
+                configuration.SelectSingleNode("//configuration/server/port").InnerText);
+            Console.WriteLine(Resources.MessageDebugPrintSSL,
+                Convert.ToBoolean(configuration.SelectSingleNode("//configuration/server/secure").InnerText));
 
             _irc.AutoReconnect = false;
             _irc.Open(
@@ -197,7 +184,7 @@ namespace ForumBot_German4D1
                 configuration.SelectSingleNode("//configuration/server/password").InnerText,
                 Convert.ToBoolean(configuration.SelectSingleNode("//configuration/bot/invisible").InnerText),
                 false
-            );
+                );
 
             // Fix for existing nicks
             _irc.AddHandler(new IrcCodeHandler(e =>
@@ -223,52 +210,60 @@ namespace ForumBot_German4D1
             // Automatically join configured channels
             _irc.AddHandler(new IrcCodeHandler(e =>
             {
-                foreach(var channel in _config.SelectNodes("//configuration/channels/channel")
+                foreach (string channel in _config.SelectNodes("//configuration/channels/channel")
                     .Cast<XmlNode>().Select(n => n.InnerText))
                     _irc.Join(channel);
                 return true; // remove handler afterwards
             }, IrcCode.RPL_ENDOFMOTD));
 
             // Initialize and run forum watcher
-            _watcher = new ForumWatcher();
-            _watcher.ForumBaseUrl = new Uri(configuration.SelectSingleNode("//configuration/forum/baseurl").InnerText);
-            _watcher.ForumID = Convert.ToUInt32(configuration.SelectSingleNode("//configuration/forum/subforum-id").InnerText);
-            _watcher.CheckInterval = TimeSpan.Parse(configuration.SelectSingleNode("//configuration/forum/checkinterval").InnerText);
+            _watcher = new ForumWatcher
+            {
+                ForumBaseUrl = new Uri(configuration.SelectSingleNode("//configuration/forum/baseurl").InnerText),
+                ForumID =
+                    Convert.ToUInt32(configuration.SelectSingleNode("//configuration/forum/subforum-id").InnerText),
+                CheckInterval =
+                    TimeSpan.Parse(configuration.SelectSingleNode("//configuration/forum/checkinterval").InnerText)
+            };
             _watcher.PostsIncoming += (s, e) =>
             {
                 try
                 {
-                    foreach (var post in e.PostNodes)
+                    foreach (XElement post in e.PostNodes)
                     {
-                        foreach (var channel in _config.SelectNodes("//configuration/channels/channel").Cast<XmlNode>().Select(n => n.InnerText))
+                        foreach (
+                            string channel in
+                                _config.SelectNodes("//configuration/channels/channel")
+                                    .Cast<XmlNode>()
+                                    .Select(n => n.InnerText))
                         {
                             var target = new IrcTarget(channel);
 
-                            var published = post.Element("{http://www.w3.org/2005/Atom}published").Value;
-                            var updated = post.Element("{http://www.w3.org/2005/Atom}updated").Value;
-                            var title = post.Element("{http://www.w3.org/2005/Atom}title").Value;
-                            var author = post.Element("{http://www.w3.org/2005/Atom}author").Value;
-                            var href = post.Element("{http://www.w3.org/2005/Atom}link").Attribute("href").Value;
+                            string published = post.Element("{http://www.w3.org/2005/Atom}published").Value;
+                            string updated = post.Element("{http://www.w3.org/2005/Atom}updated").Value;
+                            string title = post.Element("{http://www.w3.org/2005/Atom}title").Value;
+                            string author = post.Element("{http://www.w3.org/2005/Atom}author").Value;
+                            string href = post.Element("{http://www.w3.org/2005/Atom}link").Attribute("href").Value;
 
-                            var message =
+                            string message =
                                 string.Format(
                                     "\x02{0}\x02: {1} {2} {3} - {4}",
 
                                     // "New post"
-                                    Properties.Resources.NewPost,
+                                    Resources.NewPost,
 
                                     // Thread title
                                     title,
 
                                     // "by"
-                                    Properties.Resources.By,
+                                    Resources.By,
 
                                     // Author
                                     author,
 
                                     // URL to post
                                     href
-                                );
+                                    );
                             _irc.PrivateMessage(
                                 target,
                                 message
@@ -276,7 +271,10 @@ namespace ForumBot_German4D1
                         }
                     }
                 }
-                catch (Exception err) { Console.WriteLine(err); }
+                catch (Exception err)
+                {
+                    Console.WriteLine(err);
+                }
             };
         }
     }

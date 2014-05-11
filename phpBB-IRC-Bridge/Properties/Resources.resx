@@ -126,4 +126,49 @@
   <data name="NewThread" xml:space="preserve">
     <value>New thread</value>
   </data>
+  <data name="MessageIRCConnectionSuccess" xml:space="preserve">
+    <value>IRC connection succeeded.</value>
+  </data>
+  <data name="MessageIRCDisconnected" xml:space="preserve">
+    <value>IRC disconnected.</value>
+  </data>
+  <data name="MessageIRCConnecting" xml:space="preserve">
+    <value>Connecting to IRC network...</value>
+  </data>
+  <data name="MessageIRCSessionStateChanged" xml:space="preserve">
+    <value>IRC session state changed to {0}</value>
+  </data>
+  <data name="MessageBotChangedNickname" xml:space="preserve">
+    <value>&lt;Bot&gt; changed nickname to {0}</value>
+  </data>
+  <data name="MessageBotLeftChannel" xml:space="preserve">
+    <value>&lt;Bot&gt; left channel {0}</value>
+  </data>
+  <data name="MessageBotJoinedChannel" xml:space="preserve">
+    <value>&lt;Bot&gt; joined channel {0}</value>
+  </data>
+  <data name="MessageIRCUserChangedNickname" xml:space="preserve">
+    <value>{1} changed nickname to {0}</value>
+  </data>
+  <data name="MessageIRCUserLeftChanne" xml:space="preserve">
+    <value>{1} left channel {0}</value>
+  </data>
+  <data name="MessageIRCUserJoinedChannel" xml:space="preserve">
+    <value>{1} joined channel {0}</value>
+  </data>
+  <data name="MessageErrorOccurred" xml:space="preserve">
+    <value>Error: {0}</value>
+  </data>
+  <data name="MessageDebugPrintHost" xml:space="preserve">
+    <value>Host: {0}</value>
+  </data>
+  <data name="MessageDebugPrintPort" xml:space="preserve">
+    <value>Port: {0}</value>
+  </data>
+  <data name="MessageDebugPrintSSL" xml:space="preserve">
+    <value>SSL: {0}</value>
+  </data>
+  <data name="MessageWatcherRunning" xml:space="preserve">
+    <value>Watcher running.</value>
+  </data>
 </root>
