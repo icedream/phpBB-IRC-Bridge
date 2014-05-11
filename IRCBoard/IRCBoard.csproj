@@ -24,8 +24,8 @@
     <ProjectGuid>{C174A08E-B211-4A29-A423-2D05EF0AE51A}</ProjectGuid>
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ForumBot_German4D1</RootNamespace>
-    <AssemblyName>ForumBot-German4D1</AssemblyName>
+    <RootNamespace>IRCBoardBridge</RootNamespace>
+    <AssemblyName>ircboard</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>

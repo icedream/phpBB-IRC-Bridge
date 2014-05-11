@@ -1,7 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "phpBB-IRC-Bridge", "phpBB-IRC-Bridge\phpBB-IRC-Bridge.csproj", "{C174A08E-B211-4A29-A423-2D05EF0AE51A}"
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IRCBoard", "IRCBoard\IRCBoard.csproj", "{C174A08E-B211-4A29-A423-2D05EF0AE51A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Floe.Net", "dependencies\Floe\Floe.Net\Floe.Net.csproj", "{1D4AD463-4355-4DA6-B8E6-0E8BB75B50D9}"
 EndProject
