@@ -149,6 +149,7 @@ namespace ForumBot_German4D1
             {
                 if (e.From.Nickname == "ChanServ" && e.Text.Contains("This nickname is registered"))
                     _irc.PrivateMessage(new IrcTarget(e.From), string.Format("IDENTIFY {0}", _config.SelectSingleNode("//configuration/nickserv/authentication").InnerText));
+                    _irc.PrivateMessage(new IrcTarget("Botserv"), "ON");
             };
 
             // Reply to CTCP Version
